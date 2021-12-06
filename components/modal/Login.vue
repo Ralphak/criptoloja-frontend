@@ -59,8 +59,8 @@
           </div>
         </section>
         <footer class="modal-card-foot">
-          <button v-if="!isUserLoggedIn" type="submit" class="button is-info">{{ primaryBtnLabel }}</button>
-          <button v-if="isUserLoggedIn" type="button" class="button is-info" @click="closeModal">{{ btnLoggedInLabel }}</button>
+          <button v-if="!isUserLoggedIn" type="submit" class="button is-success">{{ primaryBtnLabel }}</button>
+          <button v-if="isUserLoggedIn" type="button" class="button is-success" @click="closeModal">{{ btnLoggedInLabel }}</button>
         </footer>
       </form>
     </div>

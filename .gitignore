@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 .nuxt
+docs
 
 # local env files
 .env.local

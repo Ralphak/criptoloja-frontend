@@ -109,6 +109,20 @@ export const state = () => ({
       quantity: 1
     }
   ],
+  cryptos: [
+    {
+      id: 1,
+      code: "BTC",
+      name: "Bitcoin",
+      value: 0.0015
+    },
+    {
+      id: 2,
+      code: "ETH",
+      name: "Ethereum",
+      value: 0.05
+    }
+  ],
   userInfo: {
     isLoggedIn: false,
     isSignedUp: false,
@@ -157,7 +171,8 @@ export const getters = {
   },
   quantity: state => {
     return state.products.quantity;
-  }
+  },
+  getCryptoList: state => state.cryptos
 }
 
 export const mutations = {

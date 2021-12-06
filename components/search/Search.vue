@@ -4,7 +4,7 @@
 			class="input is-rounded"
 			type="text"
 			v-model="value"
-			:placeholder="placeholder"
+			placeholder="Buscar um produto"
 			@keyup="search(value)"
 		>
 		<span class="icon is-small is-left">
@@ -19,16 +19,6 @@ export default {
 	data () {
 		return {
 			value: ''
-		}
-	},
-
-	computed: {
-		placeholder () {
-			if (this.$route.path === '/wishlist') {
-				return 'Search in wishlist...';
-			} else {
-				return 'Search...';
-			}
 		}
 	},
 

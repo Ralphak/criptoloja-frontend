@@ -6,51 +6,33 @@
           <h1 class="title is-3 is-flex-mobile"></h1>
         </nuxt-link>
 
-        <a role="button" class="navbar-burger burger" @click="isMenuOpen = !isMenuOpen" aria-label="menu" aria-expanded="false">
+        <div class="cart-button-mobile is-hidden-desktop">
+          <VmCartButton></VmCartButton>
+        </div>
+
+        <a
+          role="button"
+          class="navbar-burger burger"
+          @click="isMenuOpen = !isMenuOpen"
+          aria-label="menu"
+          aria-expanded="false"
+        >
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div class="navbar-menu is-active">
-        <div class="navbar-start">
-          <div class="navbar-item field">
-            <VmSearch></VmSearch>
-          </div>
-        </div>
-
-        <div class="navbar-end">
-          <div class="navbar-item social">
-            <a href="#" class="icon" :title="facebookTooltip">
-              <i class="fab fa-facebook"></i>
-            </a>
-            <a href="#" class="icon" :title="twitterTooltip">
-              <i class="fab fa-twitter"></i>
-            </a>
-            <a href="#" class="icon" :title="instagramTooltip">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="#" class="icon" :title="linkedinTooltip">
-              <i class="fab fa-linkedin"></i>
-            </a>
-          </div>
-          <div class="navbar-item shopping-cart" @click="showCheckoutModal">
-            <span class="icon">
-              <i class="fa fa-shopping-cart"></i>
-            </span>
-            <span :class="[numProductsAdded > 0 ? 'tag is-info' : '']">{{ numProductsAdded }}</span>
-          </div>
-        </div>
-      </div>
-
       <!-- For mobile and tablet -->
       <div v-show="isMenuOpen" class="navbar-end">
+        <VmSelectCrypto></VmSelectCrypto>
         <VmMenu></VmMenu>
       </div>
 
       <!-- For desktop -->
-      <div class="navbar-end is-hidden-mobile">
+      <div class="navbar-end is-hidden-touch">
+        <VmCartButton></VmCartButton>
+        <VmSelectCrypto></VmSelectCrypto>
         <VmMenu></VmMenu>
       </div>
     </nav>
@@ -58,54 +40,47 @@
 </template>
 
 <script>
-  import VmMenu from '../menu/Menu';
-  import VmSearch from '../search/Search';
+import VmMenu from "../menu/Menu";
+import VmCartButton from "./CartButton";
+import VmSelectCrypto from "./SelectCrypto";
 
-  export default {
-    name: 'VmHeader',
+export default {
+  name: "VmHeader",
 
-    data () {
-      return {
-        linkedinTooltip: 'Follow us on Linkedin',
-        facebookTooltip: 'Follow us on Facebook',
-        twitterTooltip: 'Follow us on Twitter',
-        instagramTooltip: 'Follow us on Instagram',
-        isCheckoutActive: false,
-        isMenuOpen: false
-      }
-    },
+  data() {
+    return {
+      isCheckoutActive: false,
+      isMenuOpen: false,
+    };
+  },
 
-    components: {
-      VmSearch,
-      VmMenu
-    },
-
-    computed: {
-      numProductsAdded () {
-        return this.$store.getters.productsAdded.length;
-      }
-    },
-
-    methods: {
-      showCheckoutModal () {
-        this.$store.commit('showCheckoutModal', true);
-      }
-    }
-  };
+  components: {
+    VmMenu,
+    VmCartButton,
+    VmSelectCrypto
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .title {
-    background: url('../../static/vuemmerce-logo.png') no-repeat;
-    background-position: 50% 50%;
-    background-size: 165px;
-    width: 175px;
-    height: 35px;
-  }
-  .shopping-cart {
-    cursor: pointer;
-  }
-  a {
-    color: grey;
-  }
+.title {
+  background: url("../../static/logo-criptoloja.png") no-repeat;
+  background-position: 50% 50%;
+  background-size: 165px;
+  width: 175px;
+  height: 35px;
+}
+a {
+  color: white;
+}
+.navbar-burger {
+  margin-left: 0;
+}
+.cart-button-mobile {
+  margin-left: auto;
+  padding-top: 5px;
+}
+.navbar{
+  background-color: green;
+}
 </style>

@@ -3,8 +3,8 @@ const pkg = require("./package");
 module.exports = {
   target: "static",
 
-  router: {
-    base: "/Vuemmerce/"
+  server: {
+    host: "0.0.0.0"
   },
 
   /*
