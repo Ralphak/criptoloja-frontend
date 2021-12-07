@@ -1,10 +1,6 @@
 <template>
   <div class="columns is-centered is-multiline">
-    <div
-      class="card column is-narrow"
-      v-for="product in products"
-      :key="product.id"
-    >
+    <div class="card column is-narrow" v-for="product in products" :key="product.id">
       <VmProducts :product="product"></VmProducts>
     </div>
     <div class="section" v-if="products.length === 0">
@@ -32,7 +28,7 @@ export default {
 
   computed: {
     products() {
-      if (this.$store.state.userInfo.hasSearched) {
+      if (this.$store.state.systemInfo.hasSearched) {
         return this.getProductByTitle();
       } else {
         return this.$store.state.products;
@@ -43,7 +39,7 @@ export default {
   methods: {
     getProductByTitle() {
       let listOfProducts = this.$store.state.products,
-        titleSearched = this.$store.state.userInfo.productTitleSearched;
+        titleSearched = this.$store.state.systemInfo.productTitleSearched;
 
       return (this.productsFiltered = getByTitle(
         listOfProducts,
