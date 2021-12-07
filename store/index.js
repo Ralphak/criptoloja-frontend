@@ -123,17 +123,10 @@ export const state = () => ({
       value: 0.05
     }
   ],
-  userInfo: {
-    isLoggedIn: false,
-    isSignedUp: false,
-    hasSearched: false,
-    name: '',
-    productTitleSearched: ''
-  },
   systemInfo: {
-    openLoginModal: false,
-    openSignupModal: false,
-    openCheckoutModal: false
+    openCheckoutModal: false,
+    hasSearched: false,
+    productTitleSearched: ''
   }
 })
 
@@ -150,21 +143,6 @@ export const getters = {
   },
   getProductById: state => id => {
     return state.products.find(product => product.id == id);
-  },
-  isUserLoggedIn: state => {
-    return state.userInfo.isLoggedIn;
-  },
-  isUserSignedUp: state => {
-    return state.userInfo.isSignedUp;
-  },
-  getUserName: state => {
-    return state.userInfo.name;
-  },
-  isLoginModalOpen: state => {
-    return state.systemInfo.openLoginModal;
-  },
-  isSignupModalOpen: state => {
-    return state.systemInfo.openSignupModal;
   },
   isCheckoutModalOpen: state => {
     return state.systemInfo.openCheckoutModal;
@@ -202,26 +180,11 @@ export const mutations = {
       el.isFavourite = false;
     });
   },
-  isUserLoggedIn: (state, isUserLoggedIn) => {
-    state.userInfo.isLoggedIn = isUserLoggedIn;
-  },
-  isUserSignedUp: (state, isSignedUp) => {
-    state.userInfo.isSignedUp = isSignedUp;
-  },
   setHasUserSearched: (state, hasSearched) => {
-    state.userInfo.hasSearched = hasSearched;
-  },
-  setUserName: (state, name) => {
-    state.userInfo.name = name;
+    state.systemInfo.hasSearched = hasSearched;
   },
   setProductTitleSearched: (state, titleSearched) => {
-    state.userInfo.productTitleSearched = titleSearched;
-  },
-  showLoginModal: (state, show) => {
-    state.systemInfo.openLoginModal = show;
-  },
-  showSignupModal: (state, show) => {
-    state.systemInfo.openSignupModal = show;
+    state.systemInfo.productTitleSearched = titleSearched;
   },
   showCheckoutModal: (state, show) => {
     state.systemInfo.openCheckoutModal = show;
@@ -246,25 +209,5 @@ export const mutations = {
         el.quantity = data.quantity;
       }
     });
-  },
-  SET_USER(state, authUser) {
-    state.authUser = authUser
   }
 }
-/* 
-export const actions = {
-  async nuxtServerInit({ commit }) {
-    const res = await this.$axios.get("/api/current_user")
-    commit("SET_USER", res.data)
-  },
-
-  async logout({ commit }) {
-    const { data } = await this.$axios.get("/api/logout")
-    if (data.ok) commit("SET_USER", null)
-  },
-
-  async handleToken({ commit }, token) {
-    const res = await this.$axios.post("/api/stripe", token)
-    commit("SET_USER", res.data)
-  }
-} */

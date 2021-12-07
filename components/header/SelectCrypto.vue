@@ -20,10 +20,11 @@ export default {
 <style lang="scss" scoped>
 .select {
   display: block;
-  margin: auto;
+  margin: auto 1em;
 }
 @media (max-width: 1023px) {
   .select {
+    margin-left: auto;
     margin-right: 2em;
   }
 }

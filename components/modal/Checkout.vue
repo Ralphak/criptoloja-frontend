@@ -106,7 +106,7 @@ export default {
 				this.isCheckoutSection = true;
 			} else {
 				this.$store.commit('showCheckoutModal', false);
-				this.$store.commit('showLoginModal', true);
+				this.$auth.loginWith('auth0');
 			}
 		},
 		onPrevBtn () {

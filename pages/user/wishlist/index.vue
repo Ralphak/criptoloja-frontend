@@ -2,7 +2,7 @@
   <div class="section">
     <h3 class="title">{{ pageTitle }}</h3>
     <div class="columns is-centered is-multiline">
-      <div class="card column is-one-quarter" v-for="product in productsInWishlist" :key="product.id">
+      <div class="card column is-narrow" v-for="product in productsInWishlist" :key="product.id">
         <VmProductsList :product="product"></VmProductsList>
       </div>
       <div class="section" v-if="productsInWishlist.length === 0">
@@ -30,7 +30,7 @@ export default {
 
   computed: {
     productsInWishlist () {
-      if (this.$store.state.userInfo.hasSearched) {
+      if (this.$store.state.systemInfo.hasSearched) {
         return this.getProductByTitle();
       } else {
         return this.$store.getters.productsAddedToFavourite;
@@ -41,7 +41,7 @@ export default {
   methods: {
     getProductByTitle () {
       let listOfProducts = this.$store.getters.productsAddedToFavourite,
-          titleSearched = this.$store.state.userInfo.productTitleSearched;
+          titleSearched = this.$store.state.systemInfo.productTitleSearched;
       
       return this.productsFiltered = getByTitle(listOfProducts, titleSearched);
     }
@@ -50,9 +50,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.card {
+  margin: 10px;
+  background-color: palegreen;
+}
+@media (min-width: 769px) {
   .card {
-    margin: 10px;
+    max-width: 19em;
   }
+}
+.columns {
+  margin: 0;
+}
 </style>
-
-

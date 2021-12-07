@@ -128,12 +128,12 @@ export default {
       this.$store.commit('quantity', data);
     },
     saveToFavorite (id) {
-      let isUserLogged = this.$store.state.userInfo.isLoggedIn;
+      let isUserLogged = this.$store.state.auth.loggedIn;
 
       if (isUserLogged) {
         this.$store.commit('addToFavourite', id);
       } else {
-        this.$store.commit('showLoginModal', true);
+        this.$auth.loginWith('auth0');
       }
     },
     removeFromFavourite (id) {

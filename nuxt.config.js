@@ -7,11 +7,8 @@ module.exports = {
     host: "0.0.0.0"
   },
 
-  /*
-   ** Headers of the page
-   */
   head: {
-    title: pkg.description,
+    title: pkg.name[0].toUpperCase() + pkg.name.substring(1),
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -20,27 +17,7 @@ module.exports = {
       { name: "msapplication-TileColor", content: "#ffffff" },
       { name: "msapplication-TileImage", content: "/ms-icon-144x144.png" },
       { name: "theme-color", content: "#ffffff" },
-
-      // Facebook open graph
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://example.com/page.html" },
-      { property: "og:title", content: "Content Title" },
-      { property: "og:image", content: "https://example.com/image.jpg" },
-      { property: "og:description", content: "Description Here" },
-      { property: "og:site_name", content: "Site Name" },
-      { property: "og:locale", content: "en_US" },
-
-      // Twitter card
-      { property: "twitter:card", content: "summary" },
-      { property: "twitter:site", content: "@site_account" },
-      { property: "twitter:creator", content: "@individual_account" },
-      { property: "twitter:url", content: "https://example.com/page.html" },
-      { property: "twitter:title", content: "Content Title" },
-      {
-        property: "twitter:description",
-        content: "Content description less than 200 characters"
-      },
-      { property: "twitter:image", content: "https://example.com/image.jpg" }
+      { name: "content-language", content: "pt-BR" }
     ],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
@@ -122,34 +99,31 @@ module.exports = {
     ]
   },
 
-  /*
-   ** Customize the progress-bar color
-   */
   loading: { color: "#fff" },
 
-  /*
-   ** Global CSS
-   */
   css: ["bulma"],
 
-  /*
-   ** Plugins to load before mounting the App
-   */
   plugins: [],
 
-  /*
-   ** Nuxt.js modules
-   */
   modules: [
-    // Doc: https://axios.nuxtjs.org/usage
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next'
   ],
-  /*
-   ** Axios module configuration
-   */
+
   axios: {
-    // See https://github.com/nuxt-community/axios-module#options
+    baseURL: process.env.BACKEND_URL
   },
 
+  auth: {
+    strategies: {
+      auth0: {
+        domain: process.env.AUTH0_DOMAIN,
+        clientId: process.env.AUTH0_CLIENT_ID,
+        audience: process.env.AUTH0_API
+      }
+    }
+  },
+  
   generate: {
     dir: "docs"
   }
