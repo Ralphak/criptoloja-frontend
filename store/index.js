@@ -4,12 +4,11 @@ export const state = () => ({
       id: 1,
       title: 'Product 1',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 50,
+      price: 5000000.01,
       ratings: 3,
       reviews: 5,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -21,7 +20,6 @@ export const state = () => ({
       reviews: 10,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -29,11 +27,10 @@ export const state = () => ({
       title: 'Product 3',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       price: 110,
-      ratings: 2,
+      ratings: 2.5,
       reviews: 3,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -45,7 +42,6 @@ export const state = () => ({
       reviews: 0,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -53,11 +49,10 @@ export const state = () => ({
       title: 'Product 5',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       price: 35,
-      ratings: 4,
+      ratings: 4.2,
       reviews: 2,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -69,7 +64,6 @@ export const state = () => ({
       reviews: 1,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -81,7 +75,6 @@ export const state = () => ({
       reviews: 7,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -89,11 +82,10 @@ export const state = () => ({
       title: 'Product 8',
       description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
       price: 35,
-      ratings: 3,
+      ratings: 3.7,
       reviews: 0,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     },
     {
@@ -105,7 +97,6 @@ export const state = () => ({
       reviews: 2,
       isAddedToCart: false,
       isAddedBtn: false,
-      isFavourite: false,
       quantity: 1
     }
   ],
@@ -134,11 +125,6 @@ export const getters = {
   productsAdded: state => {
     return state.products.filter(el => {
       return el.isAddedToCart;
-    });
-  },
-  productsAddedToFavourite: state => {
-    return state.products.filter(el => {
-      return el.isFavourite;
     });
   },
   getProductById: state => id => {
@@ -175,11 +161,6 @@ export const mutations = {
       }
     });
   },
-  removeProductsFromFavourite: state => {
-    state.products.filter(el => {
-      el.isFavourite = false;
-    });
-  },
   setHasUserSearched: (state, hasSearched) => {
     state.systemInfo.hasSearched = hasSearched;
   },
@@ -188,20 +169,6 @@ export const mutations = {
   },
   showCheckoutModal: (state, show) => {
     state.systemInfo.openCheckoutModal = show;
-  },
-  addToFavourite: (state, id) => {
-    state.products.forEach(el => {
-      if (id === el.id) {
-        el.isFavourite = true;
-      }
-    });
-  },
-  removeFromFavourite: (state, id) => {
-    state.products.forEach(el => {
-      if (id === el.id) {
-        el.isFavourite = false;
-      }
-    });
   },
   quantity: (state, data) => {
     state.products.forEach(el => {

@@ -57,7 +57,7 @@ export default {
 }
 @media (min-width: 769px) {
   .card {
-    max-width: 19em;
+    max-width: 18em;
   }
 }
 .columns {

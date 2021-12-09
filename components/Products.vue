@@ -3,59 +3,57 @@
     <div class="card-image">
       <figure class="image is-4by3">
         <img
-          src="https://bulma.io/images/placeholders/1280x960.png"
+          src="https://bulma.io/images/placeholders/640x480.png"
           alt="Placeholder image"
         />
       </figure>
     </div>
     <div class="card-content">
-      <div class="media">
-        <div class="media-content">
-          <p class="title is-4">{{ product.title }}</p>
-        </div>
-        <div>
-          <button
-            class="button is-small"
-            :title="removeFromFavouriteLabel"
-            v-show="product.isFavourite"
-            @click="removeFromFavourite(product.id)"
-          >
-            <span class="icon is-small">
-              <i class="fas fa-heart"></i>
-            </span>
-          </button>
-          <button
-            class="button is-small"
-            :title="addToFavouriteLabel"
-            v-show="!product.isFavourite"
-            @click="saveToFavorite(product.id)"
-          >
-            <span class="icon is-small">
-              <i class="far fa-heart"></i>
-            </span>
-          </button>
-        </div>
-      </div>
+      <p class="is-size-4 has-text-weight-medium">{{ product.title }}</p>
       <div class="content is-clearfix">
         <p>{{ product.description }}</p>
         <div class="is-pulled-left">
-          <i v-if="product.ratings >= 1" class="fa fa-star"></i>
-          <i v-if="product.ratings >= 2" class="fa fa-star"></i>
-          <i v-if="product.ratings >= 3" class="fa fa-star"></i>
-          <i v-if="product.ratings >= 4" class="fa fa-star"></i>
-          <i v-if="product.ratings === 5" class="fa fa-star"></i>
-          <p>
+          <i
+            v-if="product.ratings > 0 && product.ratings <= 0.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 0.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 1 && product.ratings <= 1.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 1.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 2 && product.ratings <= 2.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 2.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 3 && product.ratings <= 3.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 3.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 4 && product.ratings <= 4.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 4.5" class="fa fa-star"></i>
+          <p class="is-size-7">
             {{
-              product.reviews > 0 ? `${product.reviews} Reviews` : "No reviews"
+              product.reviews > 0
+                ? `${product.reviews} Avaliaç${
+                    product.reviews == 1 ? "ão" : "ões"
+                  }`
+                : "Nenhuma avaliação"
             }}
           </p>
         </div>
-        <p class="is-pulled-right">
-          <span class="title is-4">
-            <strong>R$ {{ product.price }}</strong>
-          </span>
-          <br>
-          <span class="title is-6">BTC {{ product.price * 0.0015 }}</span>
+        <p class="is-pulled-right has-text-right">
+          <span class="title is-4">R$ {{ product.price }}</span>
+          <br />
+          <span class="title is-6"
+            >{{ (product.price / 278000).toFixed(8) }} BTC</span
+          >
         </p>
       </div>
       <div class="card-footer btn-actions">
@@ -115,8 +113,6 @@ export default {
       addToCartLabel: "Adicionar ao carrinho",
       viewDetailsLabel: "Detalhes",
       removeFromCartLabel: "Remover do carrinho",
-      addToFavouriteLabel: "Adicionar à lista de desejos",
-      removeFromFavouriteLabel: "Remover da lista de desejos",
       selected: 1,
     };
   },
@@ -150,18 +146,6 @@ export default {
       };
       this.$store.commit("removeFromCart", id);
       this.$store.commit("setAddedBtn", data);
-    },
-    saveToFavorite(id) {
-      let isUserLogged = this.$store.state.auth.loggedIn;
-
-      if (isUserLogged) {
-        this.$store.commit("addToFavourite", id);
-      } else {
-        this.$auth.loginWith('auth0');
-      }
-    },
-    removeFromFavourite(id) {
-      this.$store.commit("removeFromFavourite", id);
     },
     onSelectQuantity(id) {
       let data = {
@@ -202,6 +186,9 @@ export default {
 }
 .buttons {
   margin: 0;
+}
+.card-footer-item {
+  padding: 0.5rem 0.25rem 0;
 }
 </style>
 

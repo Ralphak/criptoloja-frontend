@@ -1,160 +1,192 @@
 <template>
   <div class="section">
     <div class="card is-clearfix columns">
-        <figure class="card-image is-480x480 column is-one-thirds">
-          <img src="https://bulma.io/images/placeholders/480x480.png">
-        </figure>
-        <div class="card-content column is-two-thirds">
-          <div class="card-content__title">
-            <h2 class="title is-4">{{ product.title }}
-              <button class="button is-small" :title="removeFromFavouriteLabel" v-show="product.isFavourite" @click="removeFromFavourite(product.id)">
-                <span class="icon is-small">
-                  <i class="fa fa-heart"></i>
-                </span>
-              </button>
-              <button class="button is-small" :title="addToFavouriteLabel" v-show="!product.isFavourite" @click="saveToFavorite(product.id)">
-                <span class="icon is-small">
-                  <i class="far fa-heart"></i>
-                </span>
-              </button>
-            </h2>
-          </div>
-          <div class="card-content__text">
-            <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            Ut enim ad minim veniam, quis nostrud
-            </p>
-          </div>
-          <div class="card-content__ratings">
-            <i v-if="product.ratings === 1" class="fa fa-star"></i>
-            <i v-if="product.ratings === 2" class="fa fa-star"></i>
-            <i v-if="product.ratings === 2" class="fa fa-star"></i>
-            <i v-if="product.ratings === 3" class="fa fa-star"></i>
-            <i v-if="product.ratings === 3" class="fa fa-star"></i>
-            <i v-if="product.ratings === 3" class="fa fa-star"></i>
-            <i v-if="product.ratings === 4" class="fa fa-star"></i>
-            <i v-if="product.ratings === 4" class="fa fa-star"></i>
-            <i v-if="product.ratings === 4" class="fa fa-star"></i>
-            <i v-if="product.ratings === 4" class="fa fa-star"></i>
-            <i v-if="product.ratings === 5" class="fa fa-star"></i>
-            <i v-if="product.ratings === 5" class="fa fa-star"></i>
-            <i v-if="product.ratings === 5" class="fa fa-star"></i>
-            <i v-if="product.ratings === 5" class="fa fa-star"></i>
-            <i v-if="product.ratings === 5" class="fa fa-star"></i>
-          </div>
-          <div class="card-content__reviews">
-            <div class="is-pulled-left">
-              <p><strong>{{ product.reviews > 0 ? `${product.reviews} Reviews` : 'No reviews' }}</strong></p>
-            </div>
-            <div class="select is-rounded is-small is-pulled-right">
-              <select @change="onSelectQuantity(product.id)" v-model="selected">
-                <option
-                  v-for="quantity in quantityArray"
-                  :key="quantity"
-                  :value="quantity"
-                >{{ quantity }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="card-content__price is-pulled-left">
-            <span class="title is-3"><strong>{{ product.price }}&euro;</strong></span>
-          </div>
-          <div class="card-content__btn is-pulled-right">
-            <button class="button is-primary" v-if="!isAddedBtn" @click="addToCart(product.id)">{{ addToCartLabel }}</button>
-            <button class="button is-text" v-if="isAddedBtn" @click="removeFromCart(product.id)">{{ removeFromCartLabel }}</button>
-          </div>
+      <figure class="card-image is-4by3 column is-one-thirds">
+        <img src="https://bulma.io/images/placeholders/640x480.png" />
+      </figure>
+      <div class="card-content column is-two-thirds">
+        <div class="card-content__title">
+          <p class="title is-4">{{ product.title }}</p>
+        </div>
+        <div class="card-content__ratings">
+          <i
+            v-if="product.ratings > 0 && product.ratings <= 0.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 0.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 1 && product.ratings <= 1.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 1.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 2 && product.ratings <= 2.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 2.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 3 && product.ratings <= 3.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 3.5" class="fa fa-star"></i>
+          <i
+            v-if="product.ratings > 4 && product.ratings <= 4.5"
+            class="fa fa-star-half"
+          ></i>
+          <i v-if="product.ratings > 4.5" class="fa fa-star"></i>
+        </div>
+        <div class="card-content__reviews">
+          <p class="is-pulled-left">
+            {{
+              product.reviews > 0
+                ? `${product.reviews} Avaliaç${
+                    product.reviews == 1 ? "ão" : "ões"
+                  }`
+                : "Nenhuma avaliação"
+            }}
+          </p>
+        </div>
+        <div class="card-content__price is-pulled-left">
+          <span class="title is-3">R$ {{ product.price }}</span>
+          <br />
+          <span class="title is-5"
+            >{{ (product.price / 278000).toFixed(8) }} BTC</span
+          >
+        </div>
+        <div class="card-content__btn is-pulled-right">
+          <input
+            class="input is-pulled-right"
+            type="number"
+            v-model="selected"
+            min="1"
+            max="20"
+            @input="onSelectQuantity(product.id)"
+          />
+          <br />
+          <button
+            class="button is-primary"
+            v-if="!isAddedBtn"
+            @click="addToCart(product.id)"
+          >
+            {{ addToCartLabel }}
+          </button>
+          <button
+            class="button is-text"
+            v-if="isAddedBtn"
+            @click="removeFromCart(product.id)"
+          >
+            {{ removeFromCartLabel }}
+          </button>
+        </div>
       </div>
+    </div>
+    <div>
+      <p class="is-size-4">Descrição</p>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+        veniam, quis nostrud Lorem ipsum dolor sit amet, consectetur adipiscing
+        elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        Ut enim ad minim veniam, quis nostrud Lorem ipsum dolor sit amet,
+        consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+      </p>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'product_detail-id',
+  name: "product_detail-id",
 
-  validate ({ params }) {
-    return /^\d+$/.test(params.id)
+  validate({ params }) {
+    return /^\d+$/.test(params.id);
   },
 
-  data () {
+  data() {
     return {
-      addToCartLabel: 'Add to cart',
-      removeFromCartLabel: 'Remove from cart',
-      addToFavouriteLabel: 'Add to favourite',
-      removeFromFavouriteLabel: 'Remove from favourite',
+      addToCartLabel: "Adicionar ao carrinho",
+      removeFromCartLabel: "Remover do carrinho",
       product: {},
       selected: 1,
-      quantityArray: []
     };
   },
 
-  mounted () {
+  mounted() {
     this.product = this.$store.getters.getProductById(this.$route.params.id);
-    this.selected = this.product.quantity;
-
-    for (let i = 1; i <= 20; i++) {
-      this.quantityArray.push(i);
+    if (this.product.quantity > 1) {
+      this.selected = this.product.quantity;
     }
   },
 
   computed: {
-    isAddedBtn () {
+    isAddedBtn() {
       return this.product.isAddedBtn;
-    }
+    },
   },
 
   methods: {
-    addToCart (id) {
+    addToCart(id) {
       let data = {
         id: id,
-        status: true
-      }
-      this.$store.commit('addToCart', id);
-      this.$store.commit('setAddedBtn', data);
+        status: true,
+      };
+      this.$store.commit("addToCart", id);
+      this.$store.commit("setAddedBtn", data);
+      this.$store.commit("showCheckoutModal", true);
     },
-    removeFromCart (id) {
+    removeFromCart(id) {
       let data = {
         id: id,
-        status: false
-      }
-      this.$store.commit('removeFromCart', id);
-      this.$store.commit('setAddedBtn', data);
+        status: false,
+      };
+      this.$store.commit("removeFromCart", id);
+      this.$store.commit("setAddedBtn", data);
     },
-    onSelectQuantity (id) {
+    onSelectQuantity(id) {
       let data = {
         id: id,
-        quantity: this.selected
-      }
-      this.$store.commit('quantity', data);
+        quantity: this.selected,
+      };
+      this.$store.commit("quantity", data);
     },
-    saveToFavorite (id) {
-      let isUserLogged = this.$store.state.auth.loggedIn;
-
-      if (isUserLogged) {
-        this.$store.commit('addToFavourite', id);
-      } else {
-        this.$auth.loginWith('auth0');
-      }
-    },
-    removeFromFavourite (id) {
-      this.$store.commit('removeFromFavourite', id);
-    }
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
-  .card-content {
-    padding: 15px 10px 15px 0;
-
-    &__text {
-      margin: 15px 0;
-    }
-    &__reviews {
-      display: inline-block;
-      width: 100%;
-      margin-bottom: 10px;
-    }
+.card {
+  background-color: palegreen;
+}
+@media (min-width: 769px) {
+  .card {
+    max-width: 816px;
+    max-height: 216px;
   }
+}
+.card-content {
+  padding: 15px 10px;
+
+  &__text {
+    margin: 15px 0;
+  }
+  &__reviews {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  &__btn {
+    margin-bottom: 15px;
+  }
+}
+.input {
+  width: 5em;
+  margin-bottom: 10px;
+}
+.section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 </style>
 

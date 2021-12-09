@@ -20,21 +20,10 @@
       <div class="navbar-dropdown is-right">
         <nuxt-link
           class="navbar-item is-size-6 has-text-right"
-          :to="{ name: 'user-wishlist' }"
+          :to="{ name: 'index' }"
         >
           {{ ordersLabel }}
         </nuxt-link>
-        <nuxt-link
-          class="navbar-item is-size-6 has-text-right"
-          :to="{ name: 'user-wishlist' }"
-        >
-          {{ wishlistLabel }}
-        </nuxt-link>
-        <nuxt-link
-          class="navbar-item is-size-6 has-text-right"
-          :to="{ name: 'user-wishlist' }"
-        >
-          {{ paymentsLabel }}
         </nuxt-link>
         <a class="navbar-item is-size-6 has-text-right" @click="logout">
           {{ logoutLabel }}
@@ -49,11 +38,9 @@ export default {
   name: "VmMenu",
   data() {
     return {
-      wishlistLabel: "Lista de Desejos",
       logoutLabel: "Sair",
       loginLabel: "Entrar",
       ordersLabel: "Meus Pedidos",
-      paymentsLabel: "Formas de pagamento",
     };
   },
 
@@ -74,11 +61,7 @@ export default {
       this.$auth.loginWith("auth0");
     },
     logout() {
-      this.$store.commit("isUserLoggedIn", false);
-      this.$store.commit("isUserSignedUp", false);
-      this.$store.commit("removeProductsFromFavourite");
-
-      // redirect to homepage
+      this.$auth.logout();
       this.$router.push({ name: "index" });
     },
   },

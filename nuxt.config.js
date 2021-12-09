@@ -111,7 +111,7 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: process.env.BACKEND_URL
+    baseURL: "localhost:5000"
   },
 
   auth: {
@@ -120,6 +120,24 @@ module.exports = {
         domain: process.env.AUTH0_DOMAIN,
         clientId: process.env.AUTH0_CLIENT_ID,
         audience: process.env.AUTH0_API
+      }
+    }
+  },
+
+  publicRuntimeConfig: {
+    axios: {
+      baseURL: process.env.BACKEND_URL
+    }
+  },
+  
+  privateRuntimeConfig: {
+    auth: {
+      strategies: {
+        auth0: {
+          domain: process.env.AUTH0_DOMAIN,
+          clientId: process.env.AUTH0_CLIENT_ID,
+          audience: process.env.AUTH0_API
+        }
       }
     }
   },
