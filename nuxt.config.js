@@ -96,7 +96,10 @@ module.exports = {
         crossorigin: "anonymous",
         href: "https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
       }
-    ]
+    ],
+    bodyAttrs: {
+      class: "has-navbar-fixed-top"
+    }
   },
 
   loading: { color: "#fff" },
@@ -111,7 +114,7 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: "localhost:5000"
+    baseURL: "http://localhost:5000"
   },
 
   auth: {

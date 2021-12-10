@@ -38,21 +38,13 @@
             class="fa fa-star-half"
           ></i>
           <i v-if="product.ratings > 4.5" class="fa fa-star"></i>
-          <p class="is-size-7">
-            {{
-              product.reviews > 0
-                ? `${product.reviews} Avaliaç${
-                    product.reviews == 1 ? "ão" : "ões"
-                  }`
-                : "Nenhuma avaliação"
-            }}
-          </p>
+          <p class="is-size-7">{{ reviewCount }}</p>
         </div>
         <p class="is-pulled-right has-text-right">
           <span class="title is-4">R$ {{ product.price }}</span>
           <br />
           <span class="title is-6"
-            >{{ (product.price / 278000).toFixed(8) }} BTC</span
+            >{{ cryptoPrice }}</span
           >
         </p>
       </div>
@@ -124,9 +116,14 @@ export default {
   },
 
   computed: {
-    isUserLogged() {
-      return this.$store.state.auth.loggedIn;
+    cryptoPrice() {
+      let crypto = this.$store.getters.getCrypto();
+      return `${(this.$props.product.price / crypto.cotacaoReal).toFixed(8)} ${crypto.codCripto}`;
     },
+    reviewCount() {
+      let count = this.$props.product.reviews;
+      return count > 0 ? `${count} Avaliaç${count == 1 ? "ão" : "ões"}` : "Nenhuma avaliação";
+    }
   },
 
   methods: {
@@ -152,9 +149,9 @@ export default {
         id: id,
         quantity: this.selected,
       };
-      this.$store.commit("quantity", data);
+      this.$store.commit("setQuantity", data);
     },
-  },
+  }
 };
 </script>
 

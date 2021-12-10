@@ -100,46 +100,36 @@ export const state = () => ({
       quantity: 1
     }
   ],
-  cryptos: [
-    {
-      id: 1,
-      code: "BTC",
-      name: "Bitcoin",
-      value: 0.0015
-    },
-    {
-      id: 2,
-      code: "ETH",
-      name: "Ethereum",
-      value: 0.05
-    }
-  ],
+  cryptos: [],
+  userInfo: {
+    selectedCrypto: "BTC"
+  },
   systemInfo: {
-    openCheckoutModal: false,
+    isCheckoutModalOpen: false,
     hasSearched: false,
     productTitleSearched: ''
   }
 })
 
+export const actions = {
+  async nuxtServerInit({ commit }) {
+    const [cryptos] = await Promise.all([
+      this.$axios.$get("/cotacoes")
+    ]).catch(err => console.error(err));
+    commit("initialSetup", { cryptos });
+  }
+}
+
 export const getters = {
-  productsAdded: state => {
-    return state.products.filter(el => {
-      return el.isAddedToCart;
-    });
-  },
-  getProductById: state => id => {
-    return state.products.find(product => product.id == id);
-  },
-  isCheckoutModalOpen: state => {
-    return state.systemInfo.openCheckoutModal;
-  },
-  quantity: state => {
-    return state.products.quantity;
-  },
-  getCryptoList: state => state.cryptos
+  productsAdded: state => state.products.filter(el => el.isAddedToCart),
+  getProductById: state => id => state.products.find(product => product.id == id),
+  getCrypto: state => code => state.cryptos.find(i => (code || state.userInfo.selectedCrypto) == i.codCripto)
 }
 
 export const mutations = {
+  initialSetup: (state, data) => {
+    state.cryptos = data.cryptos;
+  },
   addToCart: (state, id) => {
     state.products.forEach(el => {
       if (id === el.id) {
@@ -170,11 +160,12 @@ export const mutations = {
   showCheckoutModal: (state, show) => {
     state.systemInfo.openCheckoutModal = show;
   },
-  quantity: (state, data) => {
+  setQuantity: (state, data) => {
     state.products.forEach(el => {
       if (data.id === el.id) {
         el.quantity = data.quantity;
       }
     });
-  }
+  },
+  setActiveCrypto: (state, option) => state.userInfo.selectedCrypto = option
 }

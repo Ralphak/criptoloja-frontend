@@ -36,22 +36,12 @@
           <i v-if="product.ratings > 4.5" class="fa fa-star"></i>
         </div>
         <div class="card-content__reviews">
-          <p class="is-pulled-left">
-            {{
-              product.reviews > 0
-                ? `${product.reviews} Avaliaç${
-                    product.reviews == 1 ? "ão" : "ões"
-                  }`
-                : "Nenhuma avaliação"
-            }}
-          </p>
+          <p class="is-pulled-left">{{reviewCount}}</p>
         </div>
         <div class="card-content__price is-pulled-left">
           <span class="title is-3">R$ {{ product.price }}</span>
           <br />
-          <span class="title is-5"
-            >{{ (product.price / 278000).toFixed(8) }} BTC</span
-          >
+          <span class="title is-5">{{ cryptoPrice }}</span>
         </div>
         <div class="card-content__btn is-pulled-right">
           <input
@@ -123,6 +113,14 @@ export default {
     isAddedBtn() {
       return this.product.isAddedBtn;
     },
+    cryptoPrice() {
+      let crypto = this.$store.getters.getCrypto();
+      return `${(this.product.price / crypto.cotacaoReal).toFixed(8)} ${crypto.codCripto}`;
+    },
+    reviewCount() {
+      let count = this.product.reviews;
+      return count > 0 ? `${count} Avaliaç${count == 1 ? "ão" : "ões"}` : "Nenhuma avaliação";
+    }
   },
 
   methods: {
@@ -148,7 +146,7 @@ export default {
         id: id,
         quantity: this.selected,
       };
-      this.$store.commit("quantity", data);
+      this.$store.commit("setQuantity", data);
     },
   },
 };

@@ -1,7 +1,11 @@
 <template>
-  <select class="select is-centered">
-    <option v-for="crypto in cryptoList" :key="crypto.id">
-      {{ crypto.name }} ({{ crypto.code }})
+  <select class="select is-centered" v-model="activeCrypto">
+    <option
+      v-for="crypto in cryptoList"
+      :key="crypto.codCripto"
+      :value="crypto.codCripto"
+    >
+      {{ crypto.nomeCripto }} ({{ crypto.codCripto }})
     </option>
   </select>
 </template>
@@ -11,8 +15,18 @@ export default {
   name: "VmSelectCrypto",
   data() {
     return {
-      cryptoList: this.$store.getters.getCryptoList,
+      cryptoList: this.$store.state.cryptos,
     };
+  },
+  computed: {
+    activeCrypto: {
+      get() {
+        return this.$store.state.userInfo.selectedCrypto;
+      },
+      set(value) {
+        this.$store.commit("setActiveCrypto", value);
+      },
+    },
   },
 };
 </script>
