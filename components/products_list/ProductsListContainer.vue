@@ -1,6 +1,6 @@
 <template>
   <div class="columns is-centered is-multiline">
-    <div class="card column is-narrow" v-for="product in products" :key="product.id">
+    <div class="card column is-narrow" v-for="product in products" :key="product.idProduto">
       <VmProducts :product="product"></VmProducts>
     </div>
     <div class="section" v-if="products.length === 0">
@@ -20,7 +20,6 @@ export default {
 
   data() {
     return {
-      id: "",
       noProductLabel: "No product found",
       productsFiltered: [],
     };

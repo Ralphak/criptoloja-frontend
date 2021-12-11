@@ -64,7 +64,7 @@ export default {
 
 <style lang="scss" scoped>
 .title {
-  background: url("../../static/logo-criptoloja.png") no-repeat;
+  background: url("~/static/logo-criptoloja.png") no-repeat;
   background-position: 50% 50%;
   background-size: 165px;
   width: 175px;

@@ -10,94 +10,6 @@ export const state = () => ({
       isAddedToCart: false,
       isAddedBtn: false,
       quantity: 1
-    },
-    {
-      id: 2,
-      title: 'Product 2',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 35,
-      ratings: 5,
-      reviews: 10,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 3,
-      title: 'Product 3',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 110,
-      ratings: 2.5,
-      reviews: 3,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 4,
-      title: 'Product 4',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 50,
-      ratings: 1,
-      reviews: 0,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 5,
-      title: 'Product 5',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 35,
-      ratings: 4.2,
-      reviews: 2,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 6,
-      title: 'Product 6',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 110,
-      ratings: 5,
-      reviews: 1,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 7,
-      title: 'Product 7',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 50,
-      ratings: 5,
-      reviews: 7,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 8,
-      title: 'Product 8',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 35,
-      ratings: 3.7,
-      reviews: 0,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
-    },
-    {
-      id: 9,
-      title: 'Product 9',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
-      price: 110,
-      ratings: 4,
-      reviews: 2,
-      isAddedToCart: false,
-      isAddedBtn: false,
-      quantity: 1
     }
   ],
   cryptos: [],
@@ -113,41 +25,43 @@ export const state = () => ({
 
 export const actions = {
   async nuxtServerInit({ commit }) {
-    const [cryptos] = await Promise.all([
-      this.$axios.$get("/cotacoes")
+    const [cryptos, products] = await Promise.all([
+      this.$axios.$get("/cotacoes"),
+      this.$axios.$get("/produtos")
     ]).catch(err => console.error(err));
-    commit("initialSetup", { cryptos });
+    commit("initialSetup", { cryptos, products });
   }
 }
 
 export const getters = {
   productsAdded: state => state.products.filter(el => el.isAddedToCart),
-  getProductById: state => id => state.products.find(product => product.id == id),
+  getProductById: state => id => state.products.find(product => product.idProduto == id),
   getCrypto: state => code => state.cryptos.find(i => (code || state.userInfo.selectedCrypto) == i.codCripto)
 }
 
 export const mutations = {
   initialSetup: (state, data) => {
     state.cryptos = data.cryptos;
+    state.products = data.products;
+
+    state.products.map(product => {
+      product.isAddedToCart = false;
+      product.precoReal = product.precoReal.toFixed(2);
+    });
   },
   addToCart: (state, id) => {
     state.products.forEach(el => {
-      if (id === el.id) {
+      if (id === el.idProduto) {
         el.isAddedToCart = true;
-      }
-    });
-  },
-  setAddedBtn: (state, data) => {
-    state.products.forEach(el => {
-      if (data.id === el.id) {
-        el.isAddedBtn = data.status;
+        return;
       }
     });
   },
   removeFromCart: (state, id) => {
     state.products.forEach(el => {
-      if (id === el.id) {
+      if (id === el.idProduto) {
         el.isAddedToCart = false;
+        return;
       }
     });
   },
@@ -157,13 +71,14 @@ export const mutations = {
   setProductTitleSearched: (state, titleSearched) => {
     state.systemInfo.productTitleSearched = titleSearched;
   },
-  showCheckoutModal: (state, show) => {
-    state.systemInfo.openCheckoutModal = show;
+  toggleCheckoutModal: (state, show) => {
+    state.systemInfo.isCheckoutModalOpen = show;
   },
   setQuantity: (state, data) => {
     state.products.forEach(el => {
-      if (data.id === el.id) {
+      if (data.id === el.idProduto) {
         el.quantity = data.quantity;
+        return;
       }
     });
   },

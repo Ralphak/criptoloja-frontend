@@ -2,16 +2,13 @@
   <div>
     <div class="card-image">
       <figure class="image is-4by3">
-        <img
-          src="https://bulma.io/images/placeholders/640x480.png"
-          alt="Placeholder image"
-        />
+        <img :src="imageAddress" alt="Foto" />
       </figure>
     </div>
     <div class="card-content">
-      <p class="is-size-4 has-text-weight-medium">{{ product.title }}</p>
+      <p class="is-size-4 has-text-weight-medium">{{ product.nomeProduto }}</p>
       <div class="content is-clearfix">
-        <p>{{ product.description }}</p>
+        <p>{{ shortenDescription }}</p>
         <div class="is-pulled-left">
           <i
             v-if="product.ratings > 0 && product.ratings <= 0.5"
@@ -41,11 +38,9 @@
           <p class="is-size-7">{{ reviewCount }}</p>
         </div>
         <p class="is-pulled-right has-text-right">
-          <span class="title is-4">R$ {{ product.price }}</span>
+          <span class="title is-4">R$ {{ product.precoReal }}</span>
           <br />
-          <span class="title is-6"
-            >{{ cryptoPrice }}</span
-          >
+          <span class="title is-6">{{ cryptoPrice }}</span>
         </p>
       </div>
       <div class="card-footer btn-actions">
@@ -54,14 +49,14 @@
             <button
               class="button is-primary"
               v-if="!product.isAddedToCart"
-              @click="addToCart(product.id)"
+              @click="addToCart(product.idProduto)"
             >
               {{ addToCartLabel }}
             </button>
             <button
               class="button is-danger"
               v-if="product.isAddedToCart"
-              @click="removeFromCart(product.id, false)"
+              @click="removeFromCart(product.idProduto, false)"
             >
               {{ removeFromCartLabel }}
             </button>
@@ -72,7 +67,7 @@
             v-model="selected"
             min="1"
             max="20"
-            @input="onSelectQuantity(product.id)"
+            @input="onSelectQuantity(product.idProduto)"
           />
         </div>
       </div>
@@ -82,12 +77,7 @@
       :to="{
         name: 'product_detail-id',
         params: {
-          id: product.id,
-          title: product.title,
-          price: product.price,
-          rating: product.ratings,
-          reviews: product.reviews,
-          isAddedBtn: product.isAddedBtn,
+          id: product.idProduto,
         },
       }"
     >
@@ -103,46 +93,52 @@ export default {
   data() {
     return {
       addToCartLabel: "Adicionar ao carrinho",
-      viewDetailsLabel: "Detalhes",
       removeFromCartLabel: "Remover do carrinho",
       selected: 1,
     };
   },
 
   mounted() {
-    if (this.$props.product.quantity > 1) {
+    if (this.$props.product.quantity) {
       this.selected = this.$props.product.quantity;
     }
   },
 
   computed: {
+    imageAddress() {
+      return `/products/${this.$props.product.idProduto}.jpg`;
+    },
     cryptoPrice() {
       let crypto = this.$store.getters.getCrypto();
-      return `${(this.$props.product.price / crypto.cotacaoReal).toFixed(8)} ${crypto.codCripto}`;
+      return `${(this.$props.product.precoReal / crypto.cotacaoReal).toFixed(
+        8
+      )} ${crypto.codCripto}`;
     },
     reviewCount() {
       let count = this.$props.product.reviews;
-      return count > 0 ? `${count} Avaliaç${count == 1 ? "ão" : "ões"}` : "Nenhuma avaliação";
-    }
+      return count > 0
+        ? `${count} Avaliaç${count == 1 ? "ão" : "ões"}`
+        : "Nenhuma avaliação";
+    },
+    shortenDescription() {
+      let description = this.$props.product.descricao.split(" ");
+      let label = "";
+      for (let i = 0; i < 10; i++) {
+        if (!description[i]) break;
+        label += description[i] + " ";
+      }
+      if (description.length > 10) label += "...";
+      return label;
+    },
   },
 
   methods: {
     addToCart(id) {
-      let data = {
-        id: id,
-        status: true,
-      };
       this.$store.commit("addToCart", id);
-      this.$store.commit("setAddedBtn", data);
-      this.$store.commit("showCheckoutModal", true);
+      this.$store.commit("toggleCheckoutModal", true);
     },
     removeFromCart(id) {
-      let data = {
-        id: id,
-        status: false,
-      };
       this.$store.commit("removeFromCart", id);
-      this.$store.commit("setAddedBtn", data);
     },
     onSelectQuantity(id) {
       let data = {
@@ -151,7 +147,7 @@ export default {
       };
       this.$store.commit("setQuantity", data);
     },
-  }
+  },
 };
 </script>
 
@@ -188,5 +184,3 @@ export default {
   padding: 0.5rem 0.25rem 0;
 }
 </style>
-
-

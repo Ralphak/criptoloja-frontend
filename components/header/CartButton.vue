@@ -1,5 +1,5 @@
 <template>
-  <div class="navbar-item shopping-cart" @click="showCheckoutModal">
+  <div class="navbar-item shopping-cart" @click="toggleCheckoutModal">
     <span class="icon">
       <i class="fa fa-shopping-cart"></i>
     </span>
@@ -18,8 +18,8 @@ export default {
     },
   },
   methods: {
-    showCheckoutModal() {
-      this.$store.commit("showCheckoutModal", true);
+    toggleCheckoutModal() {
+      this.$store.commit("toggleCheckoutModal", true);
     },
   },
 };

@@ -2,11 +2,11 @@
   <div class="section">
     <div class="card is-clearfix columns">
       <figure class="card-image is-4by3 column is-one-thirds">
-        <img src="https://bulma.io/images/placeholders/640x480.png" />
+        <img :src="imageAddress" alt="Foto" />
       </figure>
       <div class="card-content column is-two-thirds">
         <div class="card-content__title">
-          <p class="title is-4">{{ product.title }}</p>
+          <p class="title is-4">{{ product.nomeProduto }}</p>
         </div>
         <div class="card-content__ratings">
           <i
@@ -39,7 +39,7 @@
           <p class="is-pulled-left">{{reviewCount}}</p>
         </div>
         <div class="card-content__price is-pulled-left">
-          <span class="title is-3">R$ {{ product.price }}</span>
+          <span class="title is-3">R$ {{ product.precoReal }}</span>
           <br />
           <span class="title is-5">{{ cryptoPrice }}</span>
         </div>
@@ -50,20 +50,20 @@
             v-model="selected"
             min="1"
             max="20"
-            @input="onSelectQuantity(product.id)"
+            @input="onSelectQuantity(product.idProduto)"
           />
           <br />
           <button
             class="button is-primary"
-            v-if="!isAddedBtn"
-            @click="addToCart(product.id)"
+            v-if="!product.isAddedToCart"
+            @click="addToCart(product.idProduto)"
           >
             {{ addToCartLabel }}
           </button>
           <button
-            class="button is-text"
-            v-if="isAddedBtn"
-            @click="removeFromCart(product.id)"
+            class="button is-danger"
+            v-if="product.isAddedToCart"
+            @click="removeFromCart(product.idProduto)"
           >
             {{ removeFromCartLabel }}
           </button>
@@ -72,15 +72,7 @@
     </div>
     <div>
       <p class="is-size-4">Descrição</p>
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud Lorem ipsum dolor sit amet, consectetur adipiscing
-        elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-        Ut enim ad minim veniam, quis nostrud Lorem ipsum dolor sit amet,
-        consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-      </p>
+      <p>{{ product.descricao }}</p>
     </div>
   </div>
 </template>
@@ -104,18 +96,18 @@ export default {
 
   mounted() {
     this.product = this.$store.getters.getProductById(this.$route.params.id);
-    if (this.product.quantity > 1) {
+    if (this.product.quantity) {
       this.selected = this.product.quantity;
     }
   },
 
   computed: {
-    isAddedBtn() {
-      return this.product.isAddedBtn;
+    imageAddress() {
+      return `/products/${this.product.idProduto}.jpg`;
     },
     cryptoPrice() {
       let crypto = this.$store.getters.getCrypto();
-      return `${(this.product.price / crypto.cotacaoReal).toFixed(8)} ${crypto.codCripto}`;
+      return `${(this.product.precoReal / crypto.cotacaoReal).toFixed(8)} ${crypto.codCripto}`;
     },
     reviewCount() {
       let count = this.product.reviews;
@@ -125,21 +117,11 @@ export default {
 
   methods: {
     addToCart(id) {
-      let data = {
-        id: id,
-        status: true,
-      };
       this.$store.commit("addToCart", id);
-      this.$store.commit("setAddedBtn", data);
-      this.$store.commit("showCheckoutModal", true);
+      this.$store.commit("toggleCheckoutModal", true);
     },
     removeFromCart(id) {
-      let data = {
-        id: id,
-        status: false,
-      };
       this.$store.commit("removeFromCart", id);
-      this.$store.commit("setAddedBtn", data);
     },
     onSelectQuantity(id) {
       let data = {
