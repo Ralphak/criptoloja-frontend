@@ -20,12 +20,8 @@ export default {
   },
   computed: {
     activeCrypto: {
-      get() {
-        return this.$store.state.userInfo.selectedCrypto;
-      },
-      set(value) {
-        this.$store.commit("setActiveCrypto", value);
-      },
+      get() { return this.$store.state.systemInfo.selectedCrypto },
+      set(value) { this.$store.commit("setActiveCrypto", value) },
     },
   },
 };

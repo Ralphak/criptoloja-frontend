@@ -38,7 +38,7 @@
           <p class="is-size-7">{{ reviewCount }}</p>
         </div>
         <p class="is-pulled-right has-text-right">
-          <span class="title is-4">R$ {{ product.precoReal }}</span>
+          <span class="title is-4">{{ priceLabel }}</span>
           <br />
           <span class="title is-6">{{ cryptoPrice }}</span>
         </p>
@@ -61,14 +61,7 @@
               {{ removeFromCartLabel }}
             </button>
           </div>
-          <input
-            class="input is-small"
-            type="number"
-            v-model="selected"
-            min="1"
-            max="20"
-            @input="onSelectQuantity(product.idProduto)"
-          />
+          <VmQuantityInput class="is-small" :id=product.idProduto></VmQuantityInput>
         </div>
       </div>
     </div>
@@ -86,6 +79,7 @@
 </template>
 
 <script>
+import VmQuantityInput from "./QuantityInput";
 export default {
   name: "products",
   props: ["product"],
@@ -93,20 +87,18 @@ export default {
   data() {
     return {
       addToCartLabel: "Adicionar ao carrinho",
-      removeFromCartLabel: "Remover do carrinho",
-      selected: 1,
+      removeFromCartLabel: "Remover do carrinho"
     };
   },
 
-  mounted() {
-    if (this.$props.product.quantity) {
-      this.selected = this.$props.product.quantity;
-    }
-  },
+  components: { VmQuantityInput },
 
   computed: {
     imageAddress() {
       return `/products/${this.$props.product.idProduto}.jpg`;
+    },
+    priceLabel(){
+      return this.$store.getters.formatPriceTag(this.$props.product.precoReal);
     },
     cryptoPrice() {
       let crypto = this.$store.getters.getCrypto();
@@ -140,13 +132,6 @@ export default {
     removeFromCart(id) {
       this.$store.commit("removeFromCart", id);
     },
-    onSelectQuantity(id) {
-      let data = {
-        id: id,
-        quantity: this.selected,
-      };
-      this.$store.commit("setQuantity", data);
-    },
   },
 };
 </script>
@@ -172,7 +157,6 @@ export default {
 .input {
   margin-left: auto;
   bottom: 4px;
-  width: 5em;
 }
 .card-content {
   padding: 0;

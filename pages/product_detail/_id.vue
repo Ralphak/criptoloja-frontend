@@ -39,19 +39,12 @@
           <p class="is-pulled-left">{{reviewCount}}</p>
         </div>
         <div class="card-content__price is-pulled-left">
-          <span class="title is-3">R$ {{ product.precoReal }}</span>
+          <span class="title is-3">{{ priceLabel }}</span>
           <br />
           <span class="title is-5">{{ cryptoPrice }}</span>
         </div>
         <div class="card-content__btn is-pulled-right">
-          <input
-            class="input is-pulled-right"
-            type="number"
-            v-model="selected"
-            min="1"
-            max="20"
-            @input="onSelectQuantity(product.idProduto)"
-          />
+          <VmQuantityInput class="is-pulled-right" :id=product.idProduto></VmQuantityInput>
           <br />
           <button
             class="button is-primary"
@@ -71,13 +64,24 @@
       </div>
     </div>
     <div>
-      <p class="is-size-4">Descrição</p>
+      <p class="is-size-4">{{ descriptionLabel }}</p>
       <p>{{ product.descricao }}</p>
+      <br>
+      <p class="is-size-4">{{ specsLabel }}</p>
+      <table class="table">
+        <tbody>
+          <tr v-for="spec in product.especificacoes" :key="spec.chave">
+            <th>{{ spec.chave }}</th>
+            <td>{{ spec.valor }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
 
 <script>
+import VmQuantityInput from "~/components/products/QuantityInput";
 export default {
   name: "product_detail-id",
 
@@ -87,6 +91,8 @@ export default {
 
   data() {
     return {
+      descriptionLabel: "Descrição",
+      specsLabel: "Especificações",
       addToCartLabel: "Adicionar ao carrinho",
       removeFromCartLabel: "Remover do carrinho",
       product: {},
@@ -94,16 +100,18 @@ export default {
     };
   },
 
-  mounted() {
+  components: { VmQuantityInput },
+
+  created() {
     this.product = this.$store.getters.getProductById(this.$route.params.id);
-    if (this.product.quantity) {
-      this.selected = this.product.quantity;
-    }
   },
 
   computed: {
     imageAddress() {
       return `/products/${this.product.idProduto}.jpg`;
+    },
+    priceLabel(){
+      return this.$store.getters.formatPriceTag(this.product.precoReal);
     },
     cryptoPrice() {
       let crypto = this.$store.getters.getCrypto();
@@ -122,13 +130,6 @@ export default {
     },
     removeFromCart(id) {
       this.$store.commit("removeFromCart", id);
-    },
-    onSelectQuantity(id) {
-      let data = {
-        id: id,
-        quantity: this.selected,
-      };
-      this.$store.commit("setQuantity", data);
     },
   },
 };
@@ -160,7 +161,6 @@ export default {
   }
 }
 .input {
-  width: 5em;
   margin-bottom: 10px;
 }
 .section {

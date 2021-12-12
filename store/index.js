@@ -13,13 +13,13 @@ export const state = () => ({
     }
   ],
   cryptos: [],
-  userInfo: {
-    selectedCrypto: "BTC"
-  },
+  userInfo: {},
   systemInfo: {
     isCheckoutModalOpen: false,
     hasSearched: false,
-    productTitleSearched: ''
+    productTitleSearched: '',
+    selectedCrypto: "BTC",
+    currencyLabel: "R$"
   }
 })
 
@@ -29,20 +29,37 @@ export const actions = {
       this.$axios.$get("/cotacoes"),
       this.$axios.$get("/produtos")
     ]).catch(err => console.error(err));
-    commit("initialSetup", { cryptos, products });
+
+    let user;
+    if (this.$auth.loggedIn) {
+      user = await this.$axios.$get("/clientes?email=" + this.$auth.user.email).catch(err => console.error(err));
+      if (!user) user = await this.$axios.$post("/clientes", {
+        email: this.$auth.user.email,
+        nome: this.$auth.user.name
+      }).catch(err => console.error(err));
+    };
+
+    commit("initialSetup", { cryptos, products, user });
   }
 }
 
 export const getters = {
   productsAdded: state => state.products.filter(el => el.isAddedToCart),
   getProductById: state => id => state.products.find(product => product.idProduto == id),
-  getCrypto: state => code => state.cryptos.find(i => (code || state.userInfo.selectedCrypto) == i.codCripto)
+  getCrypto: state => code => state.cryptos.find(i => (code || state.systemInfo.selectedCrypto) == i.codCripto),
+  formatPriceTag: state => price => state.systemInfo.currencyLabel + ' ' + price,
+  getQuantity: state => id =>{
+    let product = state.products.find(product => product.idProduto == id);
+    if(!product.quantity) product.quantity = 1;
+    return product.quantity;
+  }
 }
 
 export const mutations = {
   initialSetup: (state, data) => {
     state.cryptos = data.cryptos;
     state.products = data.products;
+    if (data.user) state.userInfo = data.user;
 
     state.products.map(product => {
       product.isAddedToCart = false;
@@ -75,12 +92,8 @@ export const mutations = {
     state.systemInfo.isCheckoutModalOpen = show;
   },
   setQuantity: (state, data) => {
-    state.products.forEach(el => {
-      if (data.id === el.idProduto) {
-        el.quantity = data.quantity;
-        return;
-      }
-    });
+    let product = state.products.find(product => product.idProduto == data.id);
+    product.quantity = data.quantity;
   },
-  setActiveCrypto: (state, option) => state.userInfo.selectedCrypto = option
+  setActiveCrypto: (state, option) => state.systemInfo.selectedCrypto = option
 }
