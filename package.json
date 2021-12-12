@@ -5,6 +5,7 @@
   "author": "Rafael Alves <ralphawk@gmail.com>",
   "scripts": {
     "dev": "nuxt",
+    "serve": "nuxt start",
     "build": "nuxt generate"
   },
   "repository": {
