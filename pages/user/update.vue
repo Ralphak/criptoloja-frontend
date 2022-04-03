@@ -103,13 +103,13 @@
 <script>
 import { isValidEmail, isValidCEP } from "@/assets/validators";
 export default {
-  name: "VmMenu",
+  name: "user-update",
   data() {
     return {
       cliente: JSON.parse(JSON.stringify(this.$store.state.userInfo)),
       hideError: true,
       hideSuccess: true,
-      errorMessage: "Teste",
+      errorMessage: "",
     };
   },
   created() {

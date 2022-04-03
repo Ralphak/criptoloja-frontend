@@ -13,6 +13,7 @@ export const state = () => ({
     }
   ],
   cryptos: [],
+  paymentMethods: [],
   userInfo: {},
   systemInfo: {
     isCheckoutModalOpen: false,
@@ -25,14 +26,15 @@ export const state = () => ({
 
 export const actions = {
   async nuxtServerInit({ commit }) {
-    const [cryptos, products] = await Promise.all([
+    const [cryptos, products, paymentMethods] = await Promise.all([
       this.$axios.$get("/cotacoes"),
-      this.$axios.$get("/produtos")
+      this.$axios.$get("/produtos"),
+      this.$axios.$get("/pagamentos")
     ]).catch(err => console.error(err));
 
-    let user, address;
+    let user, address, payments;
     if (this.$auth.loggedIn) {
-      this.$axios.onRequest(config =>{
+      this.$axios.onRequest(config => {
         config.headers.common["Authorization"] = `Bearer ${this.$auth.strategy.token.get()}`
       });
 
@@ -43,9 +45,10 @@ export const actions = {
       }).catch(err => console.error(err));
 
       address = await this.$axios.$get("/enderecos/" + user.idCliente).catch(err => console.error(err));
+      payments = await this.$axios.$get("/pagamentos/cliente/" + user.idCliente).catch(err => console.error(err));
     };
 
-    commit("initialSetup", { cryptos, products, user, address });
+    commit("initialSetup", { cryptos, products, paymentMethods, user, address, payments });
   },
 
   atualizarCliente({ commit }, cliente) {
@@ -57,7 +60,13 @@ export const actions = {
     ]).then(() => {
       commit("setCliente", cliente);
     });
-  }
+  },
+  atualizarPagamento({ commit, state }, pagamento) {
+    pagamento.idCliente = state.userInfo.idCliente;
+    return this.$axios.$put("/pagamentos/cliente", pagamento).then(() => {
+      commit("incluirPagamento", pagamento);
+    });
+  },
 }
 
 export const getters = {
@@ -76,8 +85,10 @@ export const mutations = {
   initialSetup: (state, data) => {
     state.cryptos = data.cryptos;
     state.products = data.products;
+    state.paymentMethods = data.paymentMethods;
     if (data.user) state.userInfo = data.user;
     state.userInfo.endereco = data.address || {};
+    state.userInfo.pagamentos = data.payments || [];
 
     state.products.map(product => {
       product.isAddedToCart = false;
@@ -114,5 +125,10 @@ export const mutations = {
     product.quantity = data.quantity;
   },
   setActiveCrypto: (state, option) => state.systemInfo.selectedCrypto = option,
-  setCliente: (state, cliente) => state.userInfo = cliente
+  setCliente: (state, cliente) => state.userInfo = cliente,
+  incluirPagamento: (state, pagamento) => {
+    state.userInfo.pagamentos = state.userInfo.pagamentos.filter(p => p.idPagamento != pagamento.idPagamento);
+    state.userInfo.pagamentos.push(pagamento);
+    console.log(state.userInfo.pagamentos);
+  }
 }
