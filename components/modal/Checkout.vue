@@ -63,6 +63,13 @@
           {{ buyLabel }}
         </button>
         <button
+          v-show="isCheckoutSection"
+          class="button is-info"
+          @click="onPrevBtn"
+        >
+          {{ backLabel }}
+        </button>
+        <button
           v-if="isCheckoutSection"
           class="button is-success"
           @click="closeModal(true)"
@@ -86,6 +93,7 @@ export default {
       cartEmptyLabel: "Seu carrinho está vazio",
       continueLabel: "Continuar comprando",
       closeLabel: "Fechar",
+      backLabel: "Voltar",
       isCheckoutSection: false,
     };
   },

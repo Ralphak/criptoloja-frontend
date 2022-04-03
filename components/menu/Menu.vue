@@ -10,20 +10,33 @@
         </a>
       </p>
     </div>
-    <div v-if="isUserLoggedIn" class="navbar-item is-hoverable is-size-5 has-text-right">
+    <div v-if="isUserLoggedIn" class="navbar-item is-size-5 has-text-right" :class="{'is-active': isActive}"
+      @mouseenter="isActive=true" @mouseleave="isActive=false"
+    >
       <a class="navbar-link is-arrowless is-flex is-justify-content-end is-align-items-center">
         {{ getUserName }}
         <figure class="image is-48x48">
           <img class="is-rounded" :src="getUserPicture" />
         </figure>
       </a>
-      <div class="navbar-dropdown is-right">
+      <div class="navbar-dropdown is-right" @click="isActive=false">
         <nuxt-link
           class="navbar-item is-size-6 has-text-right"
-          :to="{ name: 'index' }"
+          :to="{ name: 'user-orders' }"
         >
           {{ ordersLabel }}
         </nuxt-link>
+        <nuxt-link
+          class="navbar-item is-size-6 has-text-right"
+          :to="{ name: 'user-payments' }"
+        >
+          {{ paymentsLabel }}
+        </nuxt-link>
+        <nuxt-link
+          class="navbar-item is-size-6 has-text-right"
+          :to="{ name: 'user-update' }"
+        >
+          {{ updateUserLabel }}
         </nuxt-link>
         <a class="navbar-item is-size-6 has-text-right" @click="logout">
           {{ logoutLabel }}
@@ -41,6 +54,9 @@ export default {
       logoutLabel: "Sair",
       loginLabel: "Entrar",
       ordersLabel: "Meus Pedidos",
+      paymentsLabel: "Formas de Pagamento",
+      updateUserLabel: "Atualizar Dados",
+      isActive: false
     };
   },
 
@@ -53,7 +69,7 @@ export default {
     },
     getUserPicture() {
       return this.$store.state.auth.user.picture;
-    },
+    }
   },
 
   methods: {
@@ -63,7 +79,7 @@ export default {
     logout() {
       this.$auth.logout();
       this.$router.push({ name: "index" });
-    },
+    }
   },
 };
 </script>

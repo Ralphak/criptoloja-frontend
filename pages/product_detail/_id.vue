@@ -163,10 +163,5 @@ export default {
 .input {
   margin-bottom: 10px;
 }
-.section {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
 </style>
 

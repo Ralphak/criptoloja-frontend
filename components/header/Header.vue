@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div @mouseleave="isMenuOpen = false">
     <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
-        <nuxt-link :to="{ name: 'index' }" class="navbar-item">
+        <nuxt-link :to="{ name: 'index' }" class="navbar-item"  @click.native="isMenuOpen = false">
           <h1 class="title is-3 is-flex-mobile"></h1>
         </nuxt-link>
 
@@ -26,7 +26,7 @@
       <!-- For mobile and tablet -->
       <div v-show="isMenuOpen" class="navbar-end">
         <VmSelectCrypto></VmSelectCrypto>
-        <VmMenu></VmMenu>
+        <VmMenu @click.native="isMenuOpen = false"></VmMenu>
       </div>
 
       <!-- For desktop -->

@@ -150,8 +150,7 @@ export default {
     border: 1px solid #51bafc;
   }
 }
-.button,
-.input {
+.button, .input {
   z-index: 2;
 }
 .input {

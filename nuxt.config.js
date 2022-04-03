@@ -105,7 +105,7 @@ module.exports = {
 
   loading: { color: "#fff" },
 
-  css: ["bulma"],
+  css: ["bulma", "@/assets/styles.css"],
 
   plugins: [],
 
@@ -115,7 +115,7 @@ module.exports = {
   ],
 
   axios: {
-    baseURL: "http://localhost:5000"
+    baseURL: process.env.BACKEND_URL
   },
 
   auth: {
@@ -124,24 +124,6 @@ module.exports = {
         domain: process.env.AUTH0_DOMAIN,
         clientId: process.env.AUTH0_CLIENT_ID,
         audience: process.env.AUTH0_API
-      }
-    }
-  },
-
-  publicRuntimeConfig: {
-    axios: {
-      baseURL: process.env.BACKEND_URL
-    }
-  },
-  
-  privateRuntimeConfig: {
-    auth: {
-      strategies: {
-        auth0: {
-          domain: process.env.AUTH0_DOMAIN,
-          clientId: process.env.AUTH0_CLIENT_ID,
-          audience: process.env.AUTH0_API
-        }
       }
     }
   },
