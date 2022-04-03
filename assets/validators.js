@@ -1,4 +1,9 @@
-export function isValidEmail (email) {
+export function isValidEmail(email) {
     const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
+}
+
+export function isValidCEP(cep) {
+    const re = /^[0-9]{5}-[0-9]{3}$/;
+    return re.test(cep);
 }

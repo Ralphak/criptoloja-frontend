@@ -105,7 +105,7 @@ module.exports = {
 
   loading: { color: "#fff" },
 
-  css: ["bulma", "@/assets/styles.css"],
+  css: ["bulma"],
 
   plugins: [],
 
