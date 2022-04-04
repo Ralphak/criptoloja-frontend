@@ -97,7 +97,6 @@ export default {
   },
   created() {
     if (!this.$store.state.auth.loggedIn) return this.$auth.loginWith("auth0");
-    console.log(this.formasPagamento);
   },
   computed: {
     pagamentos() {
@@ -128,7 +127,7 @@ export default {
     },
     nomePagamento(id) {
       return this.formasPagamento.find((fp) => fp.idPagamento == id).nome;
-    },
+    }
   },
 };
 </script>

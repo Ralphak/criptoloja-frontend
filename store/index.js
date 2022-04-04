@@ -61,11 +61,18 @@ export const actions = {
       commit("setCliente", cliente);
     });
   },
+  
   atualizarPagamento({ commit, state }, pagamento) {
     pagamento.idCliente = state.userInfo.idCliente;
     return this.$axios.$put("/pagamentos/cliente", pagamento).then(() => {
       commit("incluirPagamento", pagamento);
     });
+  },
+
+  async enviarPedido({ commit }, pedido) {
+    const pagamento = await this.$axios.get(`/pagamentos/${pedido.idPagamento}/cliente/${pedido.idCliente}`);
+    pedido.dadosPagamento = pagamento.data.dadosPagamento;
+    return this.$axios.$post("/pedidos", pedido);
   },
 }
 
@@ -129,6 +136,5 @@ export const mutations = {
   incluirPagamento: (state, pagamento) => {
     state.userInfo.pagamentos = state.userInfo.pagamentos.filter(p => p.idPagamento != pagamento.idPagamento);
     state.userInfo.pagamentos.push(pagamento);
-    console.log(state.userInfo.pagamentos);
   }
 }

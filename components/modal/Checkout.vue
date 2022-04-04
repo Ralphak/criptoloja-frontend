@@ -3,11 +3,13 @@
     <div class="modal-background"></div>
     <div class="modal-card">
       <header class="modal-card-head">
-        <p class="modal-card-title">{{ isCheckoutSection ? checkoutTitle : modalTitle }}</p>
+        <p class="modal-card-title">
+          {{ isCheckoutSection ? checkoutTitle : modalTitle }}
+        </p>
         <button
           class="delete"
           aria-label="close"
-          @click="closeModal(false)"
+          @click="closeModal()"
         ></button>
       </header>
       <section class="modal-card-body">
@@ -42,37 +44,67 @@
           <div v-if="products.length === 0">
             <p>{{ cartEmptyLabel }}</p>
           </div>
+          <div v-if="products.length > 0">
+            <p><b>Forma de pagamento</b></p>
+            <div class="control">
+              <label
+                class="radio"
+                v-for="pagamento in cliente.pagamentos"
+                :key="pagamento.idPagamento"
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  v-model="order.idPagamento"
+                  :value="pagamento.idPagamento"
+                />
+                {{ nomePagamento(pagamento.idPagamento) }}
+              </label>
+              <p v-if="cliente.pagamentos.length == 0">
+                Nenhum meio de pagamento registrado
+              </p>
+            </div>
+            <label class="checkbox mt-1">
+              <input
+                type="checkbox"
+                v-model="buyWithCrypto"
+                @change="generateBuyLabel"
+              />
+              Pagar em {{ activeCrypto.nomeCripto }}
+            </label>
+            <p class="mt-3"><b>Endereço</b></p>
+            <p>{{ getAddress }} {{ cliente.endereco.cep }}</p>
+          </div>
         </div>
         <div v-if="isCheckoutSection">
-          <p>Em construção</p>
+          <p>Sua compra foi finalizada! 🥳</p>
+        </div>
+        <div
+          class="notification is-danger is-light mt-4 p-2"
+          :hidden="hideError"
+        >
+          {{ errorMessage }}
         </div>
       </section>
       <footer class="modal-card-foot">
         <button
           v-show="!isCheckoutSection"
           class="button is-info"
-          @click="closeModal(false)"
+          @click="closeModal()"
         >
           {{ continueLabel }}
         </button>
         <button
           v-show="products.length > 0 && !isCheckoutSection"
           class="button is-success"
-          @click="onNextBtn"
+          @click="checkoutOrder"
         >
-          {{ buyLabel }}
-        </button>
-        <button
-          v-show="isCheckoutSection"
-          class="button is-info"
-          @click="onPrevBtn"
-        >
-          {{ backLabel }}
+          {{ generateBuyLabel() }}
         </button>
         <button
           v-if="isCheckoutSection"
           class="button is-success"
-          @click="closeModal(true)"
+          @click="closeModal()"
         >
           {{ closeLabel }}
         </button>
@@ -88,26 +120,57 @@ export default {
 
   data() {
     return {
-      modalTitle: "Meu Carrinho de Compras",
-      checkoutTitle: "Finalizar Pedido",
+      modalTitle: "Finalizar Pedido",
+      checkoutTitle: "Sucesso!",
       cartEmptyLabel: "Seu carrinho está vazio",
       continueLabel: "Continuar comprando",
       closeLabel: "Fechar",
-      backLabel: "Voltar",
       isCheckoutSection: false,
+      buyWithCrypto: false,
+      order: {},
+      formasPagamento: this.$store.state.paymentMethods,
+      hideError: true,
+      errorMessage: "",
     };
   },
 
   components: { VmQuantityInput },
 
   computed: {
+    cliente() {
+      return this.$store.state.userInfo;
+    },
     products() {
       return this.$store.getters.productsAdded;
     },
     openModal() {
       return this.$store.state.systemInfo.isCheckoutModalOpen;
     },
-    buyLabel() {
+    activeCrypto() {
+      return this.$store.getters.getCrypto();
+    },
+    isUserLoggedIn() {
+      return this.$store.state.auth.loggedIn;
+    },
+    getAddress() {
+      if (!this.cliente.endereco.cep)
+        return "Você não possui um endereço cadastrado";
+      return `${this.cliente.endereco.logradouro} ${this.cliente.endereco.numero} ${this.cliente.endereco.complemento}, ${this.cliente.endereco.bairro}, ${this.cliente.endereco.cidade}, ${this.cliente.endereco.estado}`;
+    },
+  },
+
+  methods: {
+    priceLabel(price) {
+      return this.$store.getters.formatPriceTag(price);
+    },
+    cryptoPrice(price, label = true) {
+      const value = (price / this.activeCrypto.cotacaoReal).toFixed(8);
+      return label ? `${value} ${this.activeCrypto.codCripto}` : value;
+    },
+    generateBuyLabel() {
+      if (this.cliente.pagamentos.length == 0) return "Adicionar pagamento";
+      if (!this.cliente.endereco.cep) return "Adicionar endereço";
+
       let productsAdded = this.$store.getters.productsAdded,
         pricesArray = [],
         finalPrice = "",
@@ -117,51 +180,77 @@ export default {
         if (product.quantity >= 1) {
           quantity = product.quantity;
         }
-        pricesArray.push(product.precoReal * quantity); // get the price of every product added and multiply quantity
+        pricesArray.push(product.precoReal * quantity);
       });
 
-      finalPrice = pricesArray.reduce((a, b) => a + b, 0).toFixed(2); // sum the prices
+      finalPrice = pricesArray.reduce((a, b) => a + b, 0).toFixed(2);
 
-      return `Comprar por ${this.priceLabel(finalPrice)}`;
+      return `Comprar por ${
+        this.buyWithCrypto
+          ? this.cryptoPrice(finalPrice)
+          : this.priceLabel(finalPrice)
+      }`;
     },
-    isUserLoggedIn() {
-      return this.$store.state.auth.loggedIn;
-    },
-  },
-
-  methods: {
-    priceLabel(price) {
-      return this.$store.getters.formatPriceTag(price);
-    },
-    cryptoPrice(price) {
-      let crypto = this.$store.getters.getCrypto();
-      return `${(price / crypto.cotacaoReal).toFixed(8)} ${crypto.codCripto}`;
-    },
-    closeModal(reloadPage) {
-      this.$store.commit("toggleCheckoutModal", false);
-
-      if (reloadPage) {
-        window.location.reload();
-      }
+    closeModal() {
+      this.isCheckoutSection
+        ? (window.location = "/")
+        : this.$store.commit("toggleCheckoutModal", false);
     },
     removeFromCart(id) {
       this.$store.commit("removeFromCart", id);
       if (!this.products.length)
         this.$store.commit("toggleCheckoutModal", false);
     },
-    onNextBtn() {
+    checkoutOrder() {
+      this.hideError = true;
       if (this.isUserLoggedIn) {
-        this.isCheckoutSection = true;
+        if (this.cliente.pagamentos.length == 0) {
+          this.$router.push({ name: "user-payments" });
+          this.closeModal();
+        } else if (!this.cliente.endereco.cep) {
+          this.$router.push({ name: "user-update" });
+          this.closeModal();
+        } else if (!this.order.idPagamento) {
+          this.showError("Escolha uma forma de pagamento!");
+        } else {
+          this.order = {
+            idCliente: this.cliente.idCliente,
+            cepEnvio: this.cliente.endereco.cep,
+            enderecoEnvio: this.getAddress,
+            moeda: this.buyWithCrypto ? this.activeCrypto.codCripto : "BRL",
+            idPagamento: this.order.idPagamento,
+            formaPagamento: this.nomePagamento(this.order.idPagamento),
+            produtos: this.products.map((p) => ({
+              idProduto: p.idProduto,
+              precoUnitario: Number(
+                this.buyWithCrypto
+                  ? this.cryptoPrice(p.precoReal, false)
+                  : p.precoReal
+              ),
+              quantidade: Number(p.quantity),
+            })),
+          };
+          this.$store
+            .dispatch("enviarPedido", this.order)
+            .then(() => {
+              this.isCheckoutSection = true;
+            })
+            .catch((err) => this.showError(err));
+        }
       } else {
         this.$store.commit("toggleCheckoutModal", false);
         this.$auth.loginWith("auth0");
       }
     },
-    onPrevBtn() {
-      this.isCheckoutSection = false;
-    },
     imageAddress(id) {
       return `/products/${id}.jpg`;
+    },
+    nomePagamento(id) {
+      return this.formasPagamento.find((fp) => fp.idPagamento == id).nome;
+    },
+    showError(message) {
+      this.errorMessage = message;
+      this.hideError = false;
     },
   },
 };
