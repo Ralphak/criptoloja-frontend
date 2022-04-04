@@ -1,11 +1,18 @@
 <template>
   <div class="section">
-    <div>
-      <p>Meus Pedidos</p>
-    </div>
-    <div>
-      <p class="is-size-4">titulo</p>
-      <p>thtgdnjhfnhjfyj</p>
-    </div>
+    <p class="title">Meus Pedidos</p>
+    <p class="subtitle">Em construção</p>
+    <pre v-for="pedido in pedidos" :key="pedido.numPedido" class="mb-3">{{JSON.stringify(pedido,undefined,4)}}</pre>
   </div>
 </template>
+
+<script>
+export default {
+  name: "user-orders",
+  data() {
+    return {
+      pedidos: this.$store.state.userInfo.pedidos,
+    };
+  },
+};
+</script>

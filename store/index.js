@@ -32,7 +32,7 @@ export const actions = {
       this.$axios.$get("/pagamentos")
     ]).catch(err => console.error(err));
 
-    let user, address, payments;
+    let user, address, payments, orders;
     if (this.$auth.loggedIn) {
       this.$axios.onRequest(config => {
         config.headers.common["Authorization"] = `Bearer ${this.$auth.strategy.token.get()}`
@@ -46,9 +46,10 @@ export const actions = {
 
       address = await this.$axios.$get("/enderecos/" + user.idCliente).catch(err => console.error(err));
       payments = await this.$axios.$get("/pagamentos/cliente/" + user.idCliente).catch(err => console.error(err));
+      orders = await this.$axios.$get("/pedidos").catch(err => console.error(err));
     };
 
-    commit("initialSetup", { cryptos, products, paymentMethods, user, address, payments });
+    commit("initialSetup", { cryptos, products, paymentMethods, user, address, payments, orders });
   },
 
   atualizarCliente({ commit }, cliente) {
@@ -96,6 +97,7 @@ export const mutations = {
     if (data.user) state.userInfo = data.user;
     state.userInfo.endereco = data.address || {};
     state.userInfo.pagamentos = data.payments || [];
+    state.userInfo.pedidos = data.orders || [];
 
     state.products.map(product => {
       product.isAddedToCart = false;
