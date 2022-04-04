@@ -46,7 +46,7 @@ export const actions = {
 
       address = await this.$axios.$get("/enderecos/" + user.idCliente).catch(err => console.error(err));
       payments = await this.$axios.$get("/pagamentos/cliente/" + user.idCliente).catch(err => console.error(err));
-      orders = await this.$axios.$get("/pedidos").catch(err => console.error(err));
+      orders = await this.$axios.$get("/pedidos/?idCliente=" + user.idCliente).catch(err => console.error(err));
     };
 
     commit("initialSetup", { cryptos, products, paymentMethods, user, address, payments, orders });
